@@ -140,3 +140,6 @@ dmypy.json
 project-secrets.json
 .DS_Store/
 .DS_store
+.idea/
+.idea
+
