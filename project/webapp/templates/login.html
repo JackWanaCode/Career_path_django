@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="content-section">
+      <form method="POST" action="">
+          {% csrf_token %}
+          <fieldset class="form-group">
+              <legend class="border-bottom">Log In</legend>
+              <form method="post" action="">
+                  {% csrf_token %}
+                  {# A more "HTML" way of creating the login form#}
+                  <label for="username">Username:</label>
+                  <input type="text" name="username" placeholder="Username">
+                  <label for="password">Password:</label>
+                  <input type="password" name="password" placeholder="Password">
+                  <input type="submit" name="" value="Login">
+              </form>
+</div>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Need An Account? <a class="ml-2" href="signup">Sign Up Now</a>
+        </small>
+    </div>
+
+{% endblock content %}

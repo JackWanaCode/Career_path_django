@@ -1,0 +1,140 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <title>Career Path</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}" />
+  </head>
+
+  <body class="is-preload">
+    <!-- Wrapper -->
+    <div id="wrapper">
+      <!-- Header -->
+      <header id="header">
+        <h1><a href="{% url 'home' %}">Career Path</a></h1>
+        <!-- <div id="api_status" style="margin-right:30px;margin-left:auto;border-radius:40px;width:40px;height:40px;background:#cccccc">
+	     </div> -->
+	<nav class="main sticky-top">
+          <ul>
+            <li class="search">
+              <a class="fa-search" href="#search">Search</a>
+              <form id="search" method="get" action="#">
+                <input type="text" name="query" placeholder="Search" />
+              </form>
+            </li>
+            <li class="menu">
+              <a class="fa-bars" href="#menu">Menu</a>
+            </li>
+          </ul>
+        </nav>
+	<!-- Menu -->
+	<section id="menu">
+
+	  <!-- Search -->
+	  <section>
+	    <form class="search" method="get" action="#">
+	      <input type="text" name="query" placeholder="Search" />
+	    </form>
+	  </section>
+
+	  <!-- Links -->
+	  <section>
+	    <ul class="links">
+	      <li>
+		<a href="{% url 'home' %}">
+		  <h3>Home</h3>
+		</a>
+	      </li>
+	      <li>
+		<a href="{%  url 'about' %}">
+		  <h3>About</h3>
+		</a>
+	      </li>
+	      <li>
+		<a href="#">
+		  <h3>Contact</h3>
+		</a>
+	      </li>
+	      {% if user.is_authenticated %}
+	      <li>
+		<a href="web/account">
+		  <h3>Account</h3>
+		</a>
+	      </li>
+	      <li>
+{#		<a href="{% url 'update_account' %}">#}
+{#		  <h3>Update Account</h3>#}
+{#		</a>#}
+	      </li>
+	      <li>
+		<a href="{% url 'logout' %}">
+		  <h3>Logout</h3>
+		</a>
+	      </li>
+	      {% else %}
+	      <li>
+		<a href="{% url 'login' %}">
+		  <h3>Login</h3>
+		</a>
+	      </li>
+	      <li>
+		<a href="{% url 'signup' %}">
+		  <h3>signup</h3>
+		</a>
+	      </li>
+	      {% endif %}
+	    </ul>
+	  </section>
+{#	  <div class="col-md-8">#}
+{#            {% with messages=get_flashed_messages(with_categories=true) %}#}
+{#            {% if messages %}#}
+{#            {% for category, message in messages %}#}
+{#            <div class="alert alert-{{ category }}">#}
+{#              {{ message }}#}
+{#            </div>#}
+{#            {% endfor %}#}
+{#            {% endif %}#}
+{#            {% endwith %}#}
+{#	  </div>#}
+
+      </header>
+{#      <div class="col-md-8">#}
+{#        {% with messages = get_flashed_messages(with_categories=true) %}#}
+{#        {% if messages %}#}
+{#        {% for category, message in messages %}#}
+{#        <div id="already-logged-in"class="alert alert-{{ category }}">#}
+{#          {{ message }}#}
+{#        </div>#}
+{#        {% endfor %}#}
+{#        {% endif %}#}
+{#        {% endwith %}#}
+{#      </div>#}
+
+      {% block content %}{% endblock %}
+    </div>
+
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/js/browser.min.js' %}"></script>
+    <script src="{% static 'assets/js/breakpoints.min.js' %}"></script>
+    <script src="{% static 'assets/js/util.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3XfuMJJGzaU8TUItQM7XWD4esZdbpgtA&libraries=places"></script>
+
+    <!-- Footer -->
+    <footer id="footer">
+      <ul class="icons">
+        <li><a href="https://twitter.com/" class="fa-twitter"><span class="label">Twitter</span></a></li>
+        <li><a href="#" class="fa-envelope"><span class="label">teamcareer.up@gmail.com</span></a></li>
+	<li><a href="https://github.com/JackWanaCode/Career_path_django" class="fa-github"><span class="label"></span></a></li>
+      </ul>
+      <p class="copyright">&copy; Untitled. Design: <a href="http://html5up.net">HTML5 UP</a>. Images: <a href="http://unsplash.com">Unsplash</a>.</p>
+    </footer>
+  </body>
+</html>

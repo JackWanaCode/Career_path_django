@@ -44,8 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django.contrib.sites',
     'django.contrib.sitemaps',
-    'project',
-    'home',
+    'rest_framework',
+    'home.apps.HomeConfig',
+    'job.apps.JobConfig',
+    'webapp.apps.WebappConfig',
+    'account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +68,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'web_dynamic/templates'),
+            os.path.join(BASE_DIR, 'webapp/templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -74,7 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'project.context_processors.recent_snippets',
+                # 'project.context_processors.recent_snippets',
             ],
         },
     },
@@ -118,7 +121,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfies')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'project/static')
+]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
