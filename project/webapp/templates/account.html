@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
+    {% csrf_token %}
   <div class="job_mgnt">
   <a href="create_profile"><p>Click here to create new profile</p></a>
   <table style="width:100%" id="profile_management">
@@ -17,23 +18,38 @@
     <td>{{ prof.location }}</td>
     <td>{{ prof.skills }}</td>
     <td>
-      <a href="profile" id="update {{ prof.id }}">Click here to Update {{ prof.id }}</a>
+      <button id="{{ prof.id }}" onClick="put_profile(this.id)">Click here to Update</button>
     </td>
     <td>
-{#        {% csrf_token %}#}
-{#        <form action="profile/{{ prof.id }}/" method="DELETE">#}
-{#            <input type="submit" value="Delete this profile">#}
-{#        </form>#}
-        <button id="{{ prof.id }}" onClick="delete_profile(this.id)">Click here to Delete {{ prof.id }}</button>
-        {% csrf_token %}
-        <script type="text/javascript">
-            function delete_profile(clicked_id) {
+        <button id="{{ prof.id }}" onClick="delete_profile(this.id)">Click here to Delete</button>
+    </td>
+  </tr>
+  {% endfor %}
+  <script type="text/javascript">
+      function put_profile(clicked_id) {
+          update_profile(clicked_id, 'put')
+      }
+      function delete_profile(clicked_id) {
+          update_profile(clicked_id, 'delete')
+      }
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+            function update_profile(clicked_id, request) {
+                var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
                 $.ajax({
                     url: "profile/" + clicked_id +"/",
-                    type: 'delete',
+                    type: request,
+                    beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                        return confirm("Are you sure?");
+                    },
                     success: function (data) {
                         if (data) {
-                            alert('Profile is deleted');
+                            window.location.reload();
                         }
                     },
                     error: function (xhr, ajaxOption, thrownError) {
@@ -41,11 +57,7 @@
                     }
                 });
             }
-            {#var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();#}
         </script>
-    </td>
-  </tr>
-  {% endfor %}
 </table>
 
 <table style="width:100%" id="job_management">

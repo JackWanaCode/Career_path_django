@@ -64,7 +64,6 @@ class CreateProfile(FormView):
     success_url = reverse_lazy('account')
 
     def form_valid(self, form):
-        print("created profile")
         profile = account_service.create_profile(
             user=self.request.user,
             position=form.cleaned_data.get('position'),
@@ -93,7 +92,6 @@ class Profile(APIView):
             raise Http404
 
     def get(self, request, profile_id, format=None):
-        print('get is called')
         profile = self.get_object(profile_id)
         response = {
             'data': {
@@ -106,16 +104,19 @@ class Profile(APIView):
 
         return Response(json.dumps(response), status=status.HTTP_200_OK)
 
-    # def put(self, request, format=None):
-    #     pass
+    def put(self, request, profile_id, data, format=None):
+        profile = self.get_object(profile_id)
+        profile.position = data.get('position')
+        profile.location = data.get('location')
+        profile.skills = data.get('skills')
+        profile.save()
+        return render(request, 'account.html')
 
     def delete(self, request, profile_id, format=None):
-        print('delete is called')
         profile = self.get_object(profile_id)
         if profile:
             profile.delete()
-            print('profile deleted')
-            return render(request, 'account.html', status=status.HTTP_301_MOVED_PERMANENTLY)
+            return render(request, 'account.html')
         else:
             print('profile NOT deleted')
             return Response("Profile is None", status=status.HTTP_404_NOT_FOUND)
