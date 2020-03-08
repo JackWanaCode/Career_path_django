@@ -18,7 +18,7 @@
     <td>{{ prof.location }}</td>
     <td>{{ prof.skills }}</td>
     <td>
-      <button id="{{ prof.id }}" onClick="put_profile(this.id)">Click here to Update</button>
+        <a href="update_profile/{{ prof.id }}/"><p>Click here to Update</p></a>
     </td>
     <td>
         <button id="{{ prof.id }}" onClick="delete_profile(this.id)">Click here to Delete</button>
@@ -26,26 +26,20 @@
   </tr>
   {% endfor %}
   <script type="text/javascript">
-      function put_profile(clicked_id) {
-          update_profile(clicked_id, 'put')
-      }
-      function delete_profile(clicked_id) {
-          update_profile(clicked_id, 'delete')
-      }
             function csrfSafeMethod(method) {
                 // these HTTP methods do not require CSRF protection
                 return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
             }
-            function update_profile(clicked_id, request) {
+            function delete_profile(clicked_id) {
                 var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
                 $.ajax({
-                    url: "profile/" + clicked_id +"/",
-                    type: request,
+                    url: "profile/" + clicked_id + "/",
+                    type: 'delete',
                     beforeSend: function(xhr, settings) {
                         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
                             xhr.setRequestHeader("X-CSRFToken", csrftoken);
                         }
-                        return confirm("Are you sure?");
+                        return confirm("Are you sure?" + url + request);
                     },
                     success: function (data) {
                         if (data) {

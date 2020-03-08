@@ -26,4 +26,5 @@ urlpatterns = [
     path('web/account', webviews.Account.as_view(), name='account'),
     path("web/profile/<profile_id>/", webviews.Profile.as_view(), name='profile_handler'),
     path("web/create_profile", webviews.CreateProfile.as_view(), name='create_profile'),
+    path("web/update_profile/<profile_id>/", webviews.UpdateProfile.as_view(), name='update_profile'),
 ]

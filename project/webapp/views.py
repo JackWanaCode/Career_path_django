@@ -76,6 +76,24 @@ class CreateProfile(FormView):
             return Response("profile is None", status=status.HTTP_400_BAD_REQUEST)
 
 
+class UpdateProfile(FormView):
+    template_name = 'create_profile.html'
+    form_class = ProfileForm
+    success_url = reverse_lazy('account')
+    print('update profile class')
+    def form_valid(self, form):
+        print('update profile is called')
+        profile_id = self.kwargs['profile_id']
+        profile = account_service.get_profile_by_id(profile_id)
+        if profile is not None:
+            profile.position = form.cleaned_data.get('position')
+            profile.location = form.cleaned_data.get('location')
+            profile.skills = form.cleaned_data.get('skills')
+            profile.save()
+            return super(UpdateProfile, self).form_valid(form)
+        else:
+            return Response("profile is None", status=status.HTTP_400_BAD_REQUEST)
+
 
 class Profile(APIView):
     """get and update profile"""
@@ -103,14 +121,14 @@ class Profile(APIView):
         }
 
         return Response(json.dumps(response), status=status.HTTP_200_OK)
-
-    def put(self, request, profile_id, data, format=None):
-        profile = self.get_object(profile_id)
-        profile.position = data.get('position')
-        profile.location = data.get('location')
-        profile.skills = data.get('skills')
-        profile.save()
-        return render(request, 'account.html')
+    #
+    # def put(self, request, profile_id, data, format=None):
+    #     profile = self.get_object(profile_id)
+    #     profile.position = data.get('position')
+    #     profile.location = data.get('location')
+    #     profile.skills = data.get('skills')
+    #     profile.save()
+    #     return render(request, 'account.html')
 
     def delete(self, request, profile_id, format=None):
         profile = self.get_object(profile_id)
