@@ -1,8 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
   <div class="job_mgnt">
-  <a href="profile"><p>Click here to create new profile</p></a>
-
+  <a href="create_profile"><p>Click here to create new profile</p></a>
   <table style="width:100%" id="profile_management">
     <caption>Profile management</caption>
   <tr>
@@ -14,14 +13,36 @@
   </tr>
   {% for prof in profile_list %}
   <tr>
-    <td><a href="/job_search_profile/{{ prof.id }}"</a>{{ prof.position }}</td>
+    <td><a href="{{ prof.position }}/{{ prof.location }}"</a>{{ prof.position }}</td>
     <td>{{ prof.location }}</td>
     <td>{{ prof.skills }}</td>
     <td>
-      <a href="/profile_update/{{ prof.id }}">Click here to Update</a>
+      <a href="profile" id="update {{ prof.id }}">Click here to Update {{ prof.id }}</a>
     </td>
     <td>
-      <a href="/profile_delete/{{ prof.id }}">Click here to Delete</a>
+{#        {% csrf_token %}#}
+{#        <form action="profile/{{ prof.id }}/" method="DELETE">#}
+{#            <input type="submit" value="Delete this profile">#}
+{#        </form>#}
+        <button id="{{ prof.id }}" onClick="delete_profile(this.id)">Click here to Delete {{ prof.id }}</button>
+        {% csrf_token %}
+        <script type="text/javascript">
+            function delete_profile(clicked_id) {
+                $.ajax({
+                    url: "profile/" + clicked_id +"/",
+                    type: 'delete',
+                    success: function (data) {
+                        if (data) {
+                            alert('Profile is deleted');
+                        }
+                    },
+                    error: function (xhr, ajaxOption, thrownError) {
+                        alert(xhr.status + ": " + thrownError);
+                    }
+                });
+            }
+            {#var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();#}
+        </script>
     </td>
   </tr>
   {% endfor %}

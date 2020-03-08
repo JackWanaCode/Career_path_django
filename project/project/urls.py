@@ -15,11 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from webapp import views as webviews
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
     path('mo/', include('job.urls')),
-    path('web/', include('webapp.urls')),
-    path('acc/', include('account.urls')),
+    path('web/<position>/<location>', webviews.JobList.as_view(), name='job_search'),
+    path('web/account', webviews.Account.as_view(), name='account'),
+    path("web/profile/<profile_id>/", webviews.Profile.as_view(), name='profile_handler'),
+    path("web/create_profile", webviews.CreateProfile.as_view(), name='create_profile'),
 ]

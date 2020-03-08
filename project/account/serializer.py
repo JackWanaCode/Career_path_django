@@ -3,7 +3,7 @@ from django.conf import settings
 from account.models import Profile
 
 class ProfileSerializer(serializers.Serializer):
-    user_id = serializers.ForeignKey(
+    user = serializers.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=serializers.CASCADE,
     )
