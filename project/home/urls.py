@@ -23,4 +23,5 @@ urlpatterns = [
     path('login', view.user_login, name='login'),
     path('signup', view.signup, name='signup'),
     path('logout', view.user_logout, name='logout'),
+    path('job_detail/<job_db_id>/', view.job_detail, name='job_detail')
 ]

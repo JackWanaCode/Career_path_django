@@ -87,7 +87,7 @@
       <th>{{ job.status }}</th>
     {% else %}
       <th>
-        <p><input type="checkbox" id="{{ job.id }}aproved" data-name="Aproved" style="margin-right: 10px">Aproved</p>
+        <p><input type="checkbox" id="{{ job.id }}approved" data-name="Approved" style="margin-right: 10px">Aproved</p>
         <p><input type="checkbox" id="{{ job.id }}denied" data-name="Denied"  style="margin-right: 10px">Denied</p>
       </th>
     {% endif %}
@@ -95,42 +95,84 @@
       <input type="text" id="{{ job.id }}text" name="job_status" value="{{ job.note }}">
     </th>
     <th>
-      <button onclick="saveFunc()">Save</button>
-      <button onclick="delFunc()">Delete</button>
+      <button onclick="saveFunc({{ job.id }}, '{{ job.status }}', '{{ job.note }}', '{{ job.interview }}', '{{ job.applied }}')">Save</button>
+      <button onclick="delFunc({{ job.id }})">Delete</button>
       <script>
-      function saveFunc() {
-        dic = {}
-        if ('{{ job.status }}'.length < 6) {
-          if (document.getElementById("{{ job.id }}aproved").checked) {
-            dic['status'] = 'Aproved'
-          } else if (document.getElementById("{{ job.id }}denied").checked) {
-            dic['status'] = 'Denied'
+          function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+      function saveFunc(job_id, job_status, job_note, job_interview, job_applied) {
+          const approved_id = job_id + "approved";
+          const denied_id = job_id + "denied";
+          const text_id = job_id + "text";
+          const interview_id = job_id + "interview";
+          const apply_id = job_id + "apply";
+        data = {};
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        {#console.log("1: <{{ job.status }}>");#}
+        {#  console.log("2 <{{ job.interview }}>");#}
+        {#  console.log("3 <{{ job.note }}>");#}
+        {#  console.log("4 <{{ job.applied }}>");#}
+        if (job_status === 'None') {
+            console.log('job status is ' + job_status);
+          if (document.getElementById(approved_id).checked) {
+              console.log('set approved to status');
+            data['status'] = 'Approved'
+          } else if (document.getElementById(denied_id).checked) {
+            data['status'] = 'Denied'
           }
         }
-        dic['note'] = document.getElementById("{{ job.id }}text").value
-        if ('{{ job.interview }}'.length < 6) {
-          dic['interview'] = document.getElementById("{{ job.id }}interview").value
+        let note = document.getElementById(text_id).value;
+        if (note !== 'None')
+            data['note'] = document.getElementById(text_id).value;
+        if (job_interview === 'None') {
+            let interview = document.getElementById(interview_id).value;
+            console.log("interview is: " + interview);
+            if (interview !== '') {
+                data['interview'] = document.getElementById(interview_id).value;
+            }
         }
-        if ('{{ job.applied }}'.length < 6) {
-          dic['applied'] = document.getElementById("{{ job.id }}apply").value
+        if (job_applied === 'None') {
+            let applied = document.getElementById(apply_id).value;
+            if (applied !== 'None') {
+                data['applied'] = document.getElementById(apply_id).value
+            }
         }
         $.ajax({
-          url: 'http://0.0.0.0:5000/job_update/{{ job.id }}',
+          url: 'viewed_jobs/' + job_id + '/',
           type: 'put',
           dataType: 'json',
-          data: JSON.stringify(dic),
+          data: JSON.stringify(data),
           contentType: 'application/json',
+            beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                        return confirm("Are you sure?");
+                    },
           success: function(data){
             if (data) {
-              location.reload();
+              window.location.reload();
             }
-          }
+          },
+            error: function (xhr, ajaxOption, thrownError) {
+                        alert(xhr.status + ": " + thrownError);
+                    }
         });
       }
-      function delFunc() {
+      function delFunc(job_id) {
+          var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
         $.ajax({
-          url: 'http://0.0.0.0:5000/job_delete/{{ job.id }}',
-          type: 'get',
+          url: 'viewed_jobs/' + job_id + '/',
+          type: 'delete',
+            beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                        return confirm("Are you sure?");
+                    },
           success: function(data){
             if (data) {
               location.reload();
@@ -144,6 +186,90 @@
   {% endfor %}
 
 </table>
+  <script>
+          function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+      function saveFunc(job_id, job_status, job_note, job_interview, job_applied) {
+          const approved_id = job_id + "approved";
+          const denied_id = job_id + "denied";
+          const text_id = job_id + "text";
+          const interview_id = job_id + "interview";
+          const apply_id = job_id + "apply";
+        data = {};
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        {#console.log("1: <{{ job.status }}>");#}
+        {#  console.log("2 <{{ job.interview }}>");#}
+        {#  console.log("3 <{{ job.note }}>");#}
+        {#  console.log("4 <{{ job.applied }}>");#}
+        if (job_status === 'None') {
+            console.log('job status is ' + job_status);
+          if (document.getElementById(approved_id).checked) {
+              console.log('set approved to status');
+            data['status'] = 'Approved'
+          } else if (document.getElementById(denied_id).checked) {
+            data['status'] = 'Denied'
+          }
+        }
+        let note = document.getElementById(text_id).value;
+        if (note !== 'None')
+            data['note'] = document.getElementById(text_id).value;
+        if (job_interview === 'None') {
+            let interview = document.getElementById(interview_id).value;
+            console.log("interview is: " + interview);
+            if (interview !== '') {
+                data['interview'] = document.getElementById(interview_id).value;
+            }
+        }
+        if (job_applied === 'None') {
+            let applied = document.getElementById(apply_id).value;
+            if (applied !== 'None') {
+                data['applied'] = document.getElementById(apply_id).value
+            }
+        }
+        $.ajax({
+          url: 'viewed_jobs/' + job_id + '/',
+          type: 'put',
+          dataType: 'json',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+            beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                        return confirm("Are you sure?");
+                    },
+          success: function(data){
+            if (data) {
+              window.location.reload();
+            }
+          },
+            error: function (xhr, ajaxOption, thrownError) {
+                        alert(xhr.status + ": " + thrownError);
+                    }
+        });
+      }
+      function delFunc(job_id) {
+          var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        $.ajax({
+          url: 'viewed_jobs/' + job_id + '/',
+          type: 'delete',
+            beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        }
+                        return confirm("Are you sure?");
+                    },
+          success: function(data){
+            if (data) {
+              location.reload();
+            }
+          }
+        });
+      }
+      </script>
 </div>
 
 {% endblock content %}

@@ -1,5 +1,5 @@
 from job.serializer import JobSerializer
-from job.job_services import get_job_list
+from job.job_services import get_job_list, get_job_db_by_id, add_job, get_job_list_by_user_id, get_job_by_id
 from account import account_service
 from webapp.forms import ProfileForm
 from django.http import HttpResponseRedirect
@@ -47,14 +47,49 @@ class Account(APIView):
         user_id = request.user.id
         if user_id:
             profile_list = account_service.get_all_profile(user_id)
-            return render(request, 'account.html', {'profile_list': profile_list})
+            job_list = get_job_list_by_user_id(user_id)
+            data = {
+                'profile_list': profile_list,
+                'job_list': job_list
+            }
+            return render(request, 'account.html', data)
 
-    # def post(self, request, format=None):
-    #     serializer = JobSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ViewedJobsHandler(APIView):
+
+    def get_object(self, job_id):
+        job = get_job_by_id(job_id)
+        if job:
+            return job
+        else:
+            raise Http404
+
+
+    def put(self, request, job_id, format=None):
+        print('put is called')
+        print(request.data)
+        job = self.get_object(job_id)
+        if not job:
+            return Response("job is not existed", status=status.HTTP_400_BAD_REQUEST)
+        if 'status' in request.data:
+            print('status', request.data['status'])
+            job.status = request.data['status']
+        if 'note' in request.data:
+            job.note = request.data['note']
+        if 'interview' in request.data:
+            job.interview = request.data['interview']
+        if 'applied' in request.data:
+            job.applied = request.data['applied']
+        job.save()
+        return Response("Viewed Job is updated", status=status.HTTP_200_OK)
+
+    def delete(self, request, job_id, format=None):
+        print('delete is called')
+        job = self.get_object(job_id)
+        if not job:
+            return Response("job is not existed", status=status.HTTP_400_BAD_REQUEST)
+        job.delete()
+        return render(request, 'account.html')
 
 
 class CreateProfile(FormView):
@@ -81,6 +116,7 @@ class UpdateProfile(FormView):
     form_class = ProfileForm
     success_url = reverse_lazy('account')
     print('update profile class')
+
     def form_valid(self, form):
         print('update profile is called')
         profile_id = self.kwargs['profile_id']
@@ -121,14 +157,6 @@ class Profile(APIView):
         }
 
         return Response(json.dumps(response), status=status.HTTP_200_OK)
-    #
-    # def put(self, request, profile_id, data, format=None):
-    #     profile = self.get_object(profile_id)
-    #     profile.position = data.get('position')
-    #     profile.location = data.get('location')
-    #     profile.skills = data.get('skills')
-    #     profile.save()
-    #     return render(request, 'account.html')
 
     def delete(self, request, profile_id, format=None):
         profile = self.get_object(profile_id)
@@ -139,4 +167,41 @@ class Profile(APIView):
             print('profile NOT deleted')
             return Response("Profile is None", status=status.HTTP_404_NOT_FOUND)
 
+
+class JobAdd(APIView):
+    """get or post job that seen by user"""
+
+    def get(self, request, job_id, format=None):
+        job = get_job_db_by_id(job_id)
+        if job:
+            response = {
+                'data': {
+                    'user_id': job.user.id,
+                    'position': job.position,
+                    'location': job.location,
+                    'description': job.description,
+                    'html_description': job.html_description,
+                    'link': job.link,
+                    'applied': job.applied,
+                    'status': job.status,
+                    'note': job.note,
+                    'skills': job.skills,
+                },
+            }
+            return Response(json.dumps(response), status=status.HTTP_200_OK)
+        return None
+
+    def post(self, request, job_db_id, format=None):
+        job = add_job(job_db_id, request.user)
+        if job:
+            response = {
+                'data': {
+                    'user_id': job.user.id,
+                    'position': job.position,
+                    'location': job.location,
+                },
+            }
+            return Response(json.dumps(response), status=status.HTTP_201_CREATED)
+        else:
+            return Response("Job can't be added", status=status.HTTP_400_BAD_REQUEST)
 

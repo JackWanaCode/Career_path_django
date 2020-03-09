@@ -24,7 +24,9 @@ urlpatterns = [
     path('mo/', include('job.urls')),
     path('web/<position>/<location>', webviews.JobList.as_view(), name='job_search'),
     path('web/account', webviews.Account.as_view(), name='account'),
+    path('web/viewed_jobs/<job_id>/', webviews.ViewedJobsHandler.as_view(), name='viewed_job'),
     path("web/profile/<profile_id>/", webviews.Profile.as_view(), name='profile_handler'),
     path("web/create_profile", webviews.CreateProfile.as_view(), name='create_profile'),
     path("web/update_profile/<profile_id>/", webviews.UpdateProfile.as_view(), name='update_profile'),
+    path("web/job_add/<job_db_id>/", webviews.JobAdd.as_view(), name='job_add')
 ]
