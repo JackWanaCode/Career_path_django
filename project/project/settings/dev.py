@@ -14,7 +14,7 @@ DATABASES = {
 }
 
 
-ALLOWED_HOSTS = ['192.168.1.124', '192.168.1.105', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.1.124', '54.183.221.146', '192.168.1.105', 'localhost', '127.0.0.1']
 
 EMAIL_BACKEND = 'django.app.mail.backends.console.EmailBackend'
 
