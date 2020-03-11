@@ -23,5 +23,6 @@ urlpatterns = [
     path('login', view.user_login, name='login'),
     path('signup', view.signup, name='signup'),
     path('logout', view.user_logout, name='logout'),
-    path('web/job_detail/<job_db_id>/', view.job_detail, name='job_detail')
+    path('web/job_detail/<job_db_id>/', view.job_detail, name='job_detail'),
+    path('.well-known/pki-validation/4FE5B963FE941166B49146CCAF2BB5B4.txt', view.ssl_validate)
 ]

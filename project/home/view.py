@@ -84,3 +84,7 @@ def job_detail(request, job_db_id):
         return render(request, 'job_detail.html', data)
     else:
         return HttpResponseRedirect(reverse('account'))
+
+
+def ssl_validate(request):
+    return HttpResponse(open('home/ssl_validation.txt').read())
