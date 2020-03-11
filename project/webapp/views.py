@@ -134,7 +134,7 @@ class UpdateProfile(LoginRequiredMixin, FormView):
             return Response("profile is None", status=status.HTTP_400_BAD_REQUEST)
 
 
-class Profile(APIView):
+class Profile(LoginRequiredMixin, APIView):
     """get and update profile"""
     # http_method_names = ['GET', 'PUT', 'DELETE']
 
@@ -171,7 +171,7 @@ class Profile(APIView):
             return Response("Profile is None", status=status.HTTP_404_NOT_FOUND)
 
 
-class JobAdd(APIView):
+class JobAdd(LoginRequiredMixin, APIView):
     """get or post job that seen by user"""
 
     def get(self, request, job_id, format=None):
