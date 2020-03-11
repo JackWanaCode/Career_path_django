@@ -133,6 +133,7 @@ MEDIA_URL = '/media/'
 
 LOGIN_REDIRECT_URL = 'project:index'
 
-LOGIN_URL = 'project:login'
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'login'
 
 SITE_ID = 1

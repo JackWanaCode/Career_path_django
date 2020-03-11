@@ -18,9 +18,10 @@ from django.utils.decorators import method_decorator
 from django.http import Http404
 from django.core import serializers
 import json
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class JobList(APIView):
+class JobList(LoginRequiredMixin, APIView):
     """
     List all job, or create a new job data.
     """
@@ -39,11 +40,13 @@ class JobList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class Account(APIView):
+class Account(LoginRequiredMixin, APIView):
     """
     get account data.
     """
+
     def get(self, request, format=None):
+        print('get is called')
         user_id = request.user.id
         if user_id:
             profile_list = account_service.get_all_profile(user_id)
@@ -55,7 +58,7 @@ class Account(APIView):
             return render(request, 'account.html', data)
 
 
-class ViewedJobsHandler(APIView):
+class ViewedJobsHandler(LoginRequiredMixin, APIView):
 
     def get_object(self, job_id):
         job = get_job_by_id(job_id)
@@ -92,7 +95,7 @@ class ViewedJobsHandler(APIView):
         return render(request, 'account.html')
 
 
-class CreateProfile(FormView):
+class CreateProfile(LoginRequiredMixin, FormView):
     """create a new profile"""
     template_name = 'create_profile.html'
     form_class = ProfileForm
@@ -111,7 +114,7 @@ class CreateProfile(FormView):
             return Response("profile is None", status=status.HTTP_400_BAD_REQUEST)
 
 
-class UpdateProfile(FormView):
+class UpdateProfile(LoginRequiredMixin, FormView):
     template_name = 'create_profile.html'
     form_class = ProfileForm
     success_url = reverse_lazy('account')
