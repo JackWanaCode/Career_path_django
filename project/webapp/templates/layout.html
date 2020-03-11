@@ -54,21 +54,11 @@
 		  <h3>About</h3>
 		</a>
 	      </li>
-	      <li>
-		<a href="#">
-		  <h3>Contact</h3>
-		</a>
-	      </li>
 	      {% if user.is_authenticated %}
 	      <li>
 		<a href="{% url 'account' %}">
 		  <h3>Account</h3>
 		</a>
-	      </li>
-	      <li>
-{#		<a href="{% url 'update_account' %}">#}
-{#		  <h3>Update Account</h3>#}
-{#		</a>#}
 	      </li>
 	      <li>
 		<a href="{% url 'logout' %}">
@@ -113,8 +103,11 @@
 {#        {% endif %}#}
 {#        {% endwith %}#}
 {#      </div>#}
-
+        {% if user.is_authenticated %}
+            <h3>Hello {{ user.username }}</h3>
+        {% endif %}
       {% block content %}{% endblock %}
+
     </div>
 
 

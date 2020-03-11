@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 
 from .forms import SignUpForm
@@ -11,10 +10,7 @@ from django.contrib.auth.decorators import login_required
 
 from job.models import JobDb
 from job.job_services import get_job_list, get_job_db_by_id, add_job
-from rest_framework.response import Response
-from rest_framework import status
 from django.utils.safestring import mark_safe
-from job.job_services import get_job_list_by_user_id
 
 
 def home(request):
