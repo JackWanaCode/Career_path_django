@@ -32,11 +32,13 @@ urlpatterns = [
     path('login', homeviews.user_login, name='login'),
     path('signup', homeviews.signup, name='signup'),
     path('logout', homeviews.user_logout, name='logout'),
-    path('web/job_detail/<job_db_id>/', homeviews.job_detail, name='job_detail'),
+
+    #endpoint for ssl validation
     path('.well-known/pki-validation/4FE5B963FE941166B49146CCAF2BB5B4.txt', homeviews.ssl_validate),
 
     #endpoint handler account management include profile and application
     path('web/account', account_views.Account.as_view(), name='account'),
+    path('web/job_detail/<job_db_id>/', job_views.job_detail, name='job_detail'),
     path("web/profile/<profile_id>/", account_views.Profile.as_view(), name='profile_handler'),
     path("web/create_profile", account_views.CreateProfile.as_view(), name='create_profile'),
     path("web/update_profile/<profile_id>/", account_views.UpdateProfile.as_view(), name='update_profile'),
